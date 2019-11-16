@@ -23,6 +23,13 @@
 #include "mmu.h"
 #include "trace.h"
 #include "pmu.h"
+#include "vmx/vmx.h"
+
+u64 mycounter = 0;
+EXPORT_SYMBOL_GPL(mycounter);
+
+u64 mytime = 0;
+EXPORT_SYMBOL_GPL(mytime);
 
 static u32 xstate_required_size(u64 xstate_bv, bool compacted)
 {
@@ -1028,7 +1035,16 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 
 	eax = kvm_rax_read(vcpu);
 	ecx = kvm_rcx_read(vcpu);
-	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, true);
+	if(eax == 0x4FFFFFFF) {
+		eax = mycounter;
+	}	
+	else if(eax == 0x4FFFFFFE) {
+		ebx = mytime >> 32;
+		ecx = mytime & 0xFFFFFFFF;
+	}	
+	else {	
+		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, true);
+	}	
 	kvm_rax_write(vcpu, eax);
 	kvm_rbx_write(vcpu, ebx);
 	kvm_rcx_write(vcpu, ecx);
