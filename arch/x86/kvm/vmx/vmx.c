@@ -66,6 +66,9 @@ MODULE_LICENSE("GPL");
 
 extern u64 mycounter;
 extern u64 mytime;
+extern u32 exit_counter[65];
+extern u64 exit_timer[65];
+
 
 static const struct x86_cpu_id vmx_cpu_id[] = {
 	X86_FEATURE_MATCH(X86_FEATURE_VMX),
@@ -5865,6 +5868,10 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 	u32 vectoring_info = vmx->idt_vectoring_info;
 
 	mycounter++;
+	
+	exit_counter[exit_reason]++;
+	
+
 	trace_kvm_exit(exit_reason, vcpu, KVM_ISA_VMX);
 	
 	/*
@@ -5945,7 +5952,10 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 		}
 	}
 	endtime = rdtsc();	
-	mytime += (endtime - starttime);	
+	mytime += (endtime - starttime);
+	
+	exit_timer[exit_reason]+=(endtime - starttime);
+	
 	if (exit_reason < kvm_vmx_max_exit_handlers
 	    && kvm_vmx_exit_handlers[exit_reason])
 		return kvm_vmx_exit_handlers[exit_reason](vcpu);

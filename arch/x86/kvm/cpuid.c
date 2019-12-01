@@ -31,6 +31,14 @@ EXPORT_SYMBOL_GPL(mycounter);
 u64 mytime = 0;
 EXPORT_SYMBOL_GPL(mytime);
 
+
+u32 exit_counter[65];
+EXPORT_SYMBOL_GPL(exit_counter);
+
+
+u64 exit_timer[65];
+EXPORT_SYMBOL_GPL(exit_timer);
+
 static u32 xstate_required_size(u64 xstate_bv, bool compacted)
 {
 	int feature_bit = 0;
@@ -1042,6 +1050,13 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 		ebx = mytime >> 32;
 		ecx = mytime & 0xFFFFFFFF;
 	}	
+	else if(eax == 0x4FFFFFFD) {
+		eax = exit_counter[ecx];
+	}	
+	else if(eax == 0x4FFFFFFC) {
+		ebx = exit_timer[ecx] >> 32;
+		ecx = exit_timer[ecx] & 0xFFFFFFFF;	
+	}
 	else {	
 		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, true);
 	}	
