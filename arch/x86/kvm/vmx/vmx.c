@@ -66,8 +66,8 @@ MODULE_LICENSE("GPL");
 
 extern u64 mycounter;
 extern u64 mytime;
-extern u32 exit_counter[65];
-extern u64 exit_timer[65];
+extern u32 exit_counter[70];
+extern u64 exit_timer[70];
 
 
 static const struct x86_cpu_id vmx_cpu_id[] = {

@@ -32,11 +32,11 @@ u64 mytime = 0;
 EXPORT_SYMBOL_GPL(mytime);
 
 
-u32 exit_counter[65];
+u32 exit_counter[70];
 EXPORT_SYMBOL_GPL(exit_counter);
 
 
-u64 exit_timer[65];
+u64 exit_timer[70];
 EXPORT_SYMBOL_GPL(exit_timer);
 
 static u32 xstate_required_size(u64 xstate_bv, bool compacted)
